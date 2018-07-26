@@ -1,10 +1,15 @@
 import express from 'express'
 import graphqlHttp from 'express-graphql'
 
-const app = express()
-app.use('graphql', graphqlHttp({}))
+import schema from './schema/schema'
 
-const port = 4000
+const app = express()
+app.use('/graphql', graphqlHttp({
+  schema,
+  graphiql: true
+}))
+
+const port = 4000 // process.env.port
 
 app.listen(port, () => {
   console.log(`Now listening for requests on ${port}`)
