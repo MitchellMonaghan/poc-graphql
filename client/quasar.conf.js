@@ -5,7 +5,10 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'i18n',
-      'axios'
+      'axios',
+      'apollo',
+      'vuelidate',
+      'errorHandler'
     ],
     css: [
       'app.styl'
@@ -37,7 +40,17 @@ module.exports = function (ctx) {
     devServer: {
       // https: true,
       // port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      proxy: {
+        // proxy all requests starting with /graphql to jsonplaceholder
+        '/graphql': {
+          target: 'http://localhost:4000/graphql',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/graphql': ''
+          }
+        }
+      }
     },
     // framework: 'all' --- includes everything; for dev only!
     framework: {
@@ -55,7 +68,11 @@ module.exports = function (ctx) {
         'QListHeader',
         'QItem',
         'QItemMain',
-        'QItemSide'
+        'QItemSide',
+
+        'QField',
+        'QInput',
+        'QSelect'
       ],
       directives: [
         'Ripple'
