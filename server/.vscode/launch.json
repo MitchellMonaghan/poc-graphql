@@ -13,7 +13,8 @@
         "run-script",
         "start"
       ],
-      "port": 9229
+      "port": 9229,
+      "restart": true
     }
   ]
 }
