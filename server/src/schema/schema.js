@@ -10,7 +10,7 @@ import {
 
 // import { find, filter } from 'lodash'
 
-// import Book from '@models/book'
+import Book from '@models/book'
 import Author from '@models/author'
 
 const BookType = new GraphQLObjectType({
@@ -82,6 +82,24 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    addBook: {
+      type: BookType,
+      args: {
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        authorId: { type: GraphQLID }
+      },
+      resolve (parent, args) {
+        const book = new Book({
+          name: args.name,
+          genre: args.genre,
+          authorId: args.addAuthor
+        })
+
+        return book.save()
+      }
+    },
+
     addAuthor: {
       type: AuthorType,
       args: {
