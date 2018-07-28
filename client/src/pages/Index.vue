@@ -116,14 +116,19 @@ export default {
   },
 
   methods: {
-    onSubmit () {
+    async onSubmit () {
       this.$v.form.$touch()
 
       if (this.$v.form.$error) {
         return
       }
 
-      this.$store.dispatch('bookStore/addBook', this.form)
+      try {
+        await this.$store.dispatch('bookStore/addBook', this.form)
+        await this.$store.dispatch('bookStore/fetchBooks')
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
 

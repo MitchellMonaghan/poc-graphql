@@ -13,28 +13,49 @@ const mutations = extend({}, {
 
 const actions = extend({}, {
   async addBook ({ commit }, book) {
-    // const response = await this._vm.$apollo.query({});
-    console.log(book)
+    try {
+      await this._vm.$apollo.mutate({
+        variables: book,
+        mutation: gql`
+          mutation($name: String!, $genre: String!, $authorId: ID!) {
+            addBook(name: $name, genre: $genre, authorId: $authorId) {
+              name
+              id
+            }
+          }
+        `
+      })
+
+      return Promise.resolve()
+    } catch (error) {
+      return Promise.reject(error)
+    }
   },
 
   async fetchBooks ({ commit }) {
-    const response = await this._vm.$apollo.query({
-      query: gql`
-        query books {
-          books {
-            id
-            name
-            genre
-            author{
+    try {
+      const response = await this._vm.$apollo.query({
+        query: gql`
+          query books {
+            books {
+              id
               name
-              age
+              genre
+              author{
+                name
+                age
+              }
             }
           }
-        }
-      `
-    })
+        `,
+        fetchPolicy: 'no-cache'
+      })
 
-    commit('setBooks', response.data.books)
+      commit('setBooks', response.data.books)
+      return Promise.resolve()
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }
 })
 
