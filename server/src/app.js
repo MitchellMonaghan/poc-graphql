@@ -2,8 +2,9 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import { GraphQLServer, PubSub } from 'graphql-yoga'
 
+import { authorizeUser } from '@managers/auth'
+
 import graphql from './graphql'
-graphql.context = { pubsub: new PubSub() }
 
 dotenv.config()
 
@@ -13,14 +14,35 @@ mongoose.connection.once('open', () => {
   console.log('Conected to database')
 })
 
-const options = {
-  port: process.env.PORT,
-  endpoint: '/graphql',
-  subscriptions: '/subscriptions',
-  playground: '/playground'
+// Setup up the graphql context for every request
+graphql.context = async (req) => {
+  const request = req.request
+  let user
+
+  if (request && request.headers.authorization) {
+    user = await authorizeUser(request.headers.authorization)
+  } else {
+    // TODO: Figure out how to authenticate websocket connections
+  }
+
+  return {
+    user,
+    pubsub: new PubSub()
+  }
 }
 
 const server = new GraphQLServer(graphql)
-server.start(options, ({ port }) => {
-  console.log(`🚀  Server ready on ${port}`)
-})
+server.start(
+  {
+    // Server options
+    port: process.env.PORT,
+    endpoint: '/graphql',
+    subscriptions: '/subscriptions',
+    playground: '/playground'
+  },
+
+  ({ port }) => {
+    // Server start call back
+    console.log(`🚀  Server ready on ${port}`)
+  }
+)

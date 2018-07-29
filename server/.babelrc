@@ -7,7 +7,8 @@
       "root": ["."],
       "alias": {
         "@root": ".",
-        "@models": "./src/models"
+        "@models": "./src/models",
+        "@managers": "./src/managers"
       }
     }]
   ]

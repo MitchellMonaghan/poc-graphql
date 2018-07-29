@@ -3,12 +3,19 @@ import Author from '@models/author'
 
 import typeDefs from './schema'
 
+import authenticationManager from '@managers/auth'
+import userManager from '@managers/user'
+
 const SUBSCRIPTION_EVENTS = {
   NEW_BOOK: 'NEW_BOOK'
 }
 
 const resolvers = {
   Query: {
+    async login (root, { username, password }, context, info) {
+      return authenticationManager.authenticateUser(username, password)
+    },
+
     books (root, args, context, info) {
       return Book.find({})
     },
@@ -27,13 +34,17 @@ const resolvers = {
   },
 
   Mutation: {
+    async createUser (parent, args, context) {
+      userManager.createUser(args)
+    },
+
     async addBook (parent, args, context) {
       const book = new Book({
         name: args.name,
         genre: args.genre,
         authorId: args.authorId
       })
-      
+
       const newBook = await book.save()
 
       context.pubsub.publish(SUBSCRIPTION_EVENTS.NEW_BOOK, { mutation: 'ADD', newBook })
