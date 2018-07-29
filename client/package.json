@@ -15,9 +15,12 @@
     "apollo-client": "^2.3.7",
     "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
+    "apollo-link-ws": "^1.0.8",
+    "apollo-utilities": "^1.0.17",
     "axios": "^0.18.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
+    "subscriptions-transport-ws": "^0.9.14",
     "vue-i18n": "^7.3.3",
     "vuelidate": "^0.7.4"
   },

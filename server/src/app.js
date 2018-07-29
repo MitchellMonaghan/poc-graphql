@@ -1,11 +1,10 @@
 import dotenv from 'dotenv'
-import express from 'express'
 import mongoose from 'mongoose'
-import graphqlHttp from 'express-graphql'
+import { GraphQLServer, PubSub } from 'graphql-yoga'
 
-import schema from './schema/schema'
+import graphql from './graphql'
+graphql.context = { pubsub: new PubSub() }
 
-// Load env file
 dotenv.config()
 
 // Connect to database
@@ -14,15 +13,14 @@ mongoose.connection.once('open', () => {
   console.log('Conected to database')
 })
 
-// Setup express app
-const app = express()
-app.use('/graphql', graphqlHttp({
-  schema,
-  graphiql: true
-}))
+const options = {
+  port: process.env.PORT,
+  endpoint: '/graphql',
+  subscriptions: '/subscriptions',
+  playground: '/playground'
+}
 
-const port = process.env.PORT
-
-app.listen(port, () => {
-  console.log(`Now listening for requests on ${port}`)
+const server = new GraphQLServer(graphql)
+server.start(options, ({ port }) => {
+  console.log(`🚀  Server ready on ${port}`)
 })

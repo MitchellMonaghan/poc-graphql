@@ -111,6 +111,7 @@ export default {
 
   beforeCreate () {
     // this.$store.dispatch('fetchBook', '5b5a7c39d7f8c85fba200d21')
+    this.$store.dispatch('bookStore/subscribeToBooks')
     this.$store.dispatch('bookStore/fetchBooks')
     this.$store.dispatch('authorStore/fetchAuthors')
   },
@@ -125,7 +126,7 @@ export default {
 
       try {
         await this.$store.dispatch('bookStore/addBook', this.form)
-        await this.$store.dispatch('bookStore/fetchBooks')
+        // await this.$store.dispatch('bookStore/fetchBooks')
       } catch (error) {
         console.log(error)
       }
